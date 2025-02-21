@@ -13,4 +13,8 @@ public interface UserRepository {
     boolean isUserIdExists(Long id);
 
     User update(User newUser);
+
+    Optional<User> getUserById(Long id);
+
+    void remove(Long id);
 }

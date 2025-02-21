@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.expection;
+package ru.practicum.shareit.expection;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;

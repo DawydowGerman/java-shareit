@@ -6,9 +6,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.controller.UserController;
-import ru.practicum.shareit.user.expection.NotFoundException;
-import ru.practicum.shareit.user.expection.ValidationException;
-import ru.practicum.shareit.user.expection.InternalServerException;
+import ru.practicum.shareit.expection.NotFoundException;
+import ru.practicum.shareit.expection.ValidationException;
+import ru.practicum.shareit.expection.InternalServerException;
 import ru.practicum.shareit.user.mapper.UserMapper;
 import ru.practicum.shareit.user.storage.UserRepository;
 import ru.practicum.shareit.user.dto.UserDTO;
@@ -47,15 +47,17 @@ public class UserServiceImpl {
         } else throw new NotFoundException("Список юзеров пуст.");
     }
 
-    public UserDTO update(Long id, UserDTO userDto) {
-        /*
-        if (userDto.getId() == null) {
-            log.error("Ошибка при обновлении данных юзера");
-            throw new ValidationException("Id должен быть указан");
+    public UserDTO getUserById(Long userId) {
+        if (userRepository.getUserById(userId).isEmpty()) {
+            throw new NotFoundException("Юзер c Id " + userId + " отсутствует.");
         }
-        */
+        return UserMapper.toDto(userRepository.getUserById(userId).get());
+    }
+
+    public UserDTO update(Long id, UserDTO userDto) {
         if (userRepository.isUserIdExists(id)) {
-            validateDto(userDto);
+            userDto.setId(id);
+            if (userDto.getEmail() != null) validateDto(userDto);
             User user0 = UserMapper.toModel(userDto);
             user0 = userRepository.update(user0);
             return UserMapper.toDto(user0);
@@ -65,7 +67,15 @@ public class UserServiceImpl {
         }
     }
 
-    private UserDTO validateDto(UserDTO userDto) {
+    public void remove(Long id) {
+        if (!userRepository.isUserIdExists(id)) {
+            log.error("Ошибка при удалении юзера");
+            throw new NotFoundException("Юзер не найден с id = " + id);
+        }
+        userRepository.remove(id);
+    }
+
+    private void validateDto(UserDTO userDto) {
         if (userDto.getEmail() == null || userDto.getEmail().isBlank()
                 || !userDto.getEmail().contains("@")) {
             log.error("Ошибка при добавлении юзера");
@@ -80,6 +90,5 @@ public class UserServiceImpl {
                         }
                     });
         }
-        return userDto;
     }
 }

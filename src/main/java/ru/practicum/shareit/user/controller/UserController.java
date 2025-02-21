@@ -23,12 +23,19 @@ public class UserController {
         return userService.getAllUsers();
     }
 
+    @GetMapping("/{userId}")
+    public UserDTO getUserById(@PathVariable Long userId) {
+        return userService.getUserById(userId);
+    }
+
     @PatchMapping("/{userId}")
     public UserDTO update(@PathVariable(name = "userId") Long id,
                           @RequestBody UserDTO userDto) {
         return userService.update(id, userDto);
     }
 
-
-
+    @DeleteMapping("/{userId}")
+    public void remove(@PathVariable(name = "userId") Long id) {
+        userService.remove(id);
+    }
 }

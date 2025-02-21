@@ -32,6 +32,15 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> getUserById(Long id) {
+        if (users.containsKey(id)) {
+            return Optional.of(users.get(id));
+        }
+        log.error("Ошибка при получении юзера с ID" + id);
+        return Optional.empty();
+    }
+
+    @Override
     public User update(User newUser) {
         User oldUser = users.get(newUser.getId());
         if (newUser.getEmail() != null && !newUser.getEmail().isEmpty()) {
@@ -49,6 +58,12 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public boolean isUserIdExists(Long id) {
         return users.containsKey(id);
+    }
+
+    @Override
+    public void remove(Long id) {
+        users.remove(id);
+        log.debug("Пользователь с id " + id + " удален.");
     }
 
     private long getId() {

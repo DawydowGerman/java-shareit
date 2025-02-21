@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.controller;
+package ru.practicum.shareit.errorhandler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.practicum.shareit.user.expection.NotFoundException;
-import ru.practicum.shareit.user.expection.ValidationException;
+import ru.practicum.shareit.expection.NotFoundException;
+import ru.practicum.shareit.expection.ValidationException;
 
 @RestControllerAdvice
 public class ErrorHandler {
