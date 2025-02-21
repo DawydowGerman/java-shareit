@@ -8,7 +8,6 @@ import ru.practicum.shareit.user.controller.UserController;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Repository
 public class ItemRepositoryImpl implements ItemRepository {
