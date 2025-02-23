@@ -3,10 +3,15 @@ package ru.practicum.shareit.user.storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import ru.practicum.shareit.expection.InternalServerException;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ArrayList;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -16,6 +21,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User saveUser(User user) {
         user.setId(getId());
+        checkSameEmail(user);
         users.put(user.getId(), user);
         log.debug("Добавлен юзер с Id {}", user.getId());
         return user;
@@ -42,6 +48,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User update(User newUser) {
+        checkSameEmail(newUser);
         User oldUser = users.get(newUser.getId());
         if (newUser.getEmail() != null && !newUser.getEmail().isEmpty()) {
             log.trace("Изменен имейл юзера с Id {}", newUser.getId());
@@ -72,5 +79,17 @@ public class InMemoryUserRepository implements UserRepository {
                 .max()
                 .orElse(0);
         return lastId + 1;
+    }
+
+    private void checkSameEmail(User userToCheck) {
+        if (findAll().isPresent()) {
+            findAll().get()
+                    .stream()
+                    .forEach(user -> {
+                        if (user.getEmail().equals(userToCheck.getEmail())) {
+                            throw new InternalServerException("Этот имейл уже используется");
+                        }
+                    });
+        }
     }
 }

@@ -20,4 +20,13 @@ public class Item {
         this.ownerId = ownerId;
         this.request = request;
     }
+
+    public Item(String name, String description,
+                Boolean available, Long ownerId, String request) {
+        this.name = name;
+        this.description = description;
+        this.available = available;
+        this.ownerId = ownerId;
+        this.request = request;
+    }
 }

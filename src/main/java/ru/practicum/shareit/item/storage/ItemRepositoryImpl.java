@@ -56,7 +56,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public Optional<List<Item>> getItemsByText(String text) {
-    List<Item> resultList = items.values()
+        List<Item> resultList = items.values()
                 .stream()
                 .filter(item -> item.getDescription().toLowerCase().contains(text.toLowerCase())
                         || item.getName().toLowerCase().contains(text.toLowerCase())
@@ -65,13 +65,13 @@ public class ItemRepositoryImpl implements ItemRepository {
         if (resultList.size() > 0) {
             return Optional.of(resultList);
         }
-        log.error("Вещи c описанием, включающим " + text + " отсутствуют.");
-        return Optional.empty();
+        List<Item> emtpytList = new ArrayList<>();
+        return Optional.of(emtpytList);
     }
 
     @Override
-    public Item update(Item newItem) {
-        Item oldItem = items.get(newItem.getId());
+    public Item update(Item newItem, Long itemId) {
+        Item oldItem = items.get(itemId);
         if (newItem.getName() != null && !newItem.getName().isBlank()) {
             log.trace("Изменено наименование вещи с Id {}", newItem.getId());
             oldItem.setName(newItem.getName());

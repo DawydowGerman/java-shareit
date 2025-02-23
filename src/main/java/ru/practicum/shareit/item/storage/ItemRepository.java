@@ -17,7 +17,7 @@ public interface ItemRepository {
 
     void deleteByUserIdAndItemId(long userId, long itemId);
 
-    Item update(Item newItem);
+    Item update(Item newItem, Long itemId);
 
     boolean isItemIdExists(Long id);
 }
