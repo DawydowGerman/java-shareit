@@ -7,11 +7,7 @@ import ru.practicum.shareit.expection.InternalServerException;
 import ru.practicum.shareit.user.controller.UserController;
 import ru.practicum.shareit.user.model.User;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.ArrayList;
+import java.util.*;
 
 @Repository
 public class InMemoryUserRepository implements UserRepository {
@@ -21,7 +17,9 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User saveUser(User user) {
         user.setId(getId());
-        checkSameEmail(user);
+        if (checkEmail(user)) {
+            throw new InternalServerException("Этот имейл уже используется");
+        }
         users.put(user.getId(), user);
         log.debug("Добавлен юзер с Id {}", user.getId());
         return user;
@@ -48,7 +46,9 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User update(User newUser) {
-        checkSameEmail(newUser);
+        if (checkEmail(newUser)) {
+            throw new InternalServerException("Этот имейл уже используется");
+        }
         User oldUser = users.get(newUser.getId());
         if (newUser.getEmail() != null && !newUser.getEmail().isEmpty()) {
             log.trace("Изменен имейл юзера с Id {}", newUser.getId());
@@ -81,15 +81,13 @@ public class InMemoryUserRepository implements UserRepository {
         return lastId + 1;
     }
 
-    private void checkSameEmail(User userToCheck) {
+    private boolean checkEmail(User user) {
         if (findAll().isPresent()) {
-            findAll().get()
+            return findAll().get()
                     .stream()
-                    .forEach(user -> {
-                        if (user.getEmail().equals(userToCheck.getEmail())) {
-                            throw new InternalServerException("Этот имейл уже используется");
-                        }
-                    });
+                    .filter(u -> u.getEmail().equals(user.getEmail()))
+                    .anyMatch(u -> u != user);
         }
+        return false;
     }
 }

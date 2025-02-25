@@ -1,11 +1,14 @@
 package ru.practicum.shareit.errorhandler;
 
+import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.expection.InternalServerException;
 import ru.practicum.shareit.expection.NotFoundException;
 import ru.practicum.shareit.expection.ValidationException;
 
@@ -15,14 +18,15 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleThrowable(final Throwable e) {
+    public ErrorResponse handleInternalServerException(final InternalServerException e) {
         log.info("500 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
-    @ExceptionHandler
+    @ExceptionHandler({MethodArgumentNotValidException.class,
+            ConstraintViolationException.class, ValidationException.class})
     @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationException(final ValidationException e) {
+    public ErrorResponse handleValidationException(final Exception e) {
         log.info("400 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
