@@ -1,32 +1,43 @@
 package ru.practicum.shareit.item.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import lombok.*;
+import ru.practicum.shareit.user.model.User;
 
-@Data
+@Entity
+@Table(name = "items")
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Item {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
-    private String description;
-    private Boolean available;
-    private Long ownerId;
-    private String request;
 
-    public Item(Long id, String name, String description,
-                Boolean available, Long ownerId, String request) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.available = available;
-        this.ownerId = ownerId;
-        this.request = request;
-    }
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "available")
+    private Boolean available;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @Column(name = "request_id")
+    private Long requestId = 1l;
 
     public Item(String name, String description,
-                Boolean available, Long ownerId, String request) {
+                Boolean available, User owner) {
         this.name = name;
         this.description = description;
         this.available = available;
-        this.ownerId = ownerId;
-        this.request = request;
+        this.owner = owner;
     }
 }

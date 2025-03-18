@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import ru.practicum.shareit.user.model.User;
 
 @Setter
 @Getter
@@ -18,6 +19,6 @@ public class ItemResponseDTO {
     private String name;
     private String description;
     private Boolean available;
-    private Long ownerId;
-    private String request;
+    private User owner;
+    private Long requestId;
 }
