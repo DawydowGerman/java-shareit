@@ -33,16 +33,18 @@ public class ItemRequestDTO {
         List<String> resultList = new ArrayList<>();
         Arrays.stream(this.getClass().getDeclaredFields())
                 .forEach(f -> {
-                    try {
-                        if (f.get(this) != null) {
-                            resultList.add(f.getName());
+                            try {
+                                if (f.get(this) != null) {
+                                    resultList.add(f.getName());
+                                }
+                            } catch (IllegalAccessException e) {
+                                e.getMessage();
+                            }
                         }
-                    } catch (IllegalAccessException e) {
-                        e.getMessage();
-                    }
-                });
+                );
         if (resultList.size() > 0) {
             return Optional.of(resultList);
-        } return Optional.empty();
+        }
+        return Optional.empty();
     }
 }

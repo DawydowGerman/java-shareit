@@ -31,7 +31,7 @@ public class Item {
     private User owner;
 
     @Column(name = "request_id")
-    private Long requestId = 1l;
+    private Long requestId = 1L;
 
     public Item(String name, String description,
                 Boolean available, User owner) {
