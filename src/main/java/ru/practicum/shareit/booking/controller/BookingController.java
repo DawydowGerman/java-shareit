@@ -24,5 +24,13 @@ public class BookingController {
         return bookingServiceImpl.addNewBooking(userId, bookingRequestDTO);
     }
 
+    @PatchMapping("/{bookingId}")
+    public BookingResponseDTO update(@PositiveOrZero @RequestHeader(SHARER_USER_ID) Long userId,
+                                     @PositiveOrZero @PathVariable(name = "bookingId") Long bookingId,
+                                     @RequestParam(required = false) Boolean approved) {
+        log.info("Owner's approval: {}", approved);
+        return bookingServiceImpl.update(bookingId, userId, approved);
+    }
+
 
 }

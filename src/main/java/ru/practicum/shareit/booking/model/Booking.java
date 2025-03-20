@@ -33,7 +33,7 @@ public class Booking {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "booker_id")
-    private User user;
+    private User booker;
 
     @Column(name = "status")
     private Status status;

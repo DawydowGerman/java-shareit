@@ -9,6 +9,7 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.enums.Status;
 import ru.practicum.shareit.booking.storage.BookingJPARepository;
+import ru.practicum.shareit.expection.ForbiddenException;
 import ru.practicum.shareit.expection.NotFoundException;
 import ru.practicum.shareit.expection.ValidationException;
 import ru.practicum.shareit.item.model.Item;
@@ -41,10 +42,27 @@ public class BookingServiceImpl {
         }
         Booking booking = BookingMapper.toModel(bookingRequestDTO);
         booking.setItem(item);
-        booking.setUser(user);
+        booking.setBooker(user);
         booking.setStatus(Status.WAITING);
         booking = bookingJPARepository.save(booking);
-        System.out.println("booking booker_id's: " + booking.getUser().getId());
+        return BookingMapper.toDto(booking);
+    }
+
+    @Transactional
+    public BookingResponseDTO update(Long bookingId, Long ownerId, Boolean status) {
+        Booking booking = bookingJPARepository.findById(bookingId)
+                .orElseThrow(() -> new NotFoundException("Бронирование с ID " + bookingId + " отсутствует."));
+        User user = userJPARepository.findById(ownerId)
+                .orElseThrow(() -> new ForbiddenException("Юзер с ID " + ownerId + " отсутствует."));
+        if (!booking.getItem().getOwner().equals(user)) {
+            throw new ForbiddenException("Юзер с id " + ownerId + " не является владельцем вещи.");
+        }
+        if (status.equals(true)) {
+            booking.setStatus(Status.APPROVED);
+        } else {
+            booking.setStatus(Status.REJECTED);
+        }
+        booking = bookingJPARepository.save(booking);
         return BookingMapper.toDto(booking);
     }
 }
