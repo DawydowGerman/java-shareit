@@ -1,7 +1,6 @@
 package ru.practicum.shareit.errorhandler;
 
 import org.hibernate.exception.ConstraintViolationException;
-// import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -39,15 +38,12 @@ public class ErrorHandler {
         return new ErrorResponse(e.getMessage());
     }
 
-// org.hibernate.exception.ConstraintViolationException
-
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleNotFoundException(final NotFoundException e) {
         log.info("404 {}", e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
-
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)

@@ -5,9 +5,10 @@ import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ItemJPARepository extends JpaRepository<Item, Long> {
-    List<Item> findByOwnerId(long ownerId);
+    Optional<List<Item>> findByOwnerId(long ownerId);
 
     @Query("select it " +
             "from Item as it " +

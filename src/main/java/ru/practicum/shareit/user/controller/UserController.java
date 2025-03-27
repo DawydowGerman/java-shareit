@@ -15,7 +15,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
-// @Validated
 public class UserController {
     private final UserServiceImpl userService;
 

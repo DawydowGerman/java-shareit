@@ -9,6 +9,8 @@ import ru.practicum.shareit.booking.dto.BookingRequestDTO;
 import ru.practicum.shareit.booking.dto.BookingResponseDTO;
 import ru.practicum.shareit.booking.service.BookingServiceImpl;
 
+import java.util.List;
+
 @Slf4j
 @RestController
 @RequestMapping(path = "/bookings")
@@ -32,5 +34,24 @@ public class BookingController {
         return bookingServiceImpl.update(bookingId, userId, approved);
     }
 
+    @GetMapping("/{bookingId}")
+    public BookingResponseDTO getBookingById(@PositiveOrZero @RequestHeader(SHARER_USER_ID) Long userId,
+                                             @PathVariable(name = "bookingId") Long bookingId) {
+        log.info("Request of booking by ID: {}", bookingId);
+        return bookingServiceImpl.getBookingById(bookingId, userId);
+    }
 
+    @GetMapping
+    public List<BookingResponseDTO> getBookingByUserId(@PositiveOrZero @RequestHeader(SHARER_USER_ID) Long userId,
+                                                       @RequestParam(defaultValue = "ALL") String state) {
+        log.info("Request of booking by user ID: {}", userId);
+        return bookingServiceImpl.getBookingByUserId(state, userId);
+    }
+
+    @GetMapping("/owner")
+    public List<BookingResponseDTO> getBookingOfItemsByOwnerId(@PositiveOrZero @RequestHeader(SHARER_USER_ID) Long userId,
+                                                               @RequestParam(defaultValue = "ALL") String state) {
+        log.info("Request of booking by user ID: {}", userId);
+        return bookingServiceImpl.getBookingOfItemsByOwnerId(state, userId);
+    }
 }

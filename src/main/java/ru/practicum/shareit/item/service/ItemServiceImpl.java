@@ -3,27 +3,45 @@ package ru.practicum.shareit.item.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingResponseDTO;
+import ru.practicum.shareit.booking.mapper.BookingMapper;
+import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.storage.BookingJPARepository;
 import ru.practicum.shareit.expection.NotFoundException;
+import ru.practicum.shareit.expection.ValidationException;
+import ru.practicum.shareit.item.dto.CommentRequestDTO;
+import ru.practicum.shareit.item.dto.CommentResponseDTO;
 import ru.practicum.shareit.item.dto.ItemRequestDTO;
 import ru.practicum.shareit.item.dto.ItemResponseDTO;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.storage.CommentJPARepository;
 import ru.practicum.shareit.item.storage.ItemJPARepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserJPARepository;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class ItemServiceImpl implements ItemService {
+    private final BookingJPARepository bookingJPARepository;
     private final ItemJPARepository itemJPARepository;
     private final UserJPARepository userJPARepository;
+    private final CommentJPARepository commentRepository;
 
     @Autowired
-    public ItemServiceImpl(ItemJPARepository itemJPARepository, UserJPARepository userJPARepository) {
+    public ItemServiceImpl(BookingJPARepository bookingJPARepository, ItemJPARepository itemJPARepository,
+                           UserJPARepository userJPARepository, CommentJPARepository commentRepository) {
+        this.bookingJPARepository = bookingJPARepository;
         this.itemJPARepository = itemJPARepository;
         this.userJPARepository = userJPARepository;
+        this.commentRepository = commentRepository;
     }
 
     @Transactional
@@ -38,23 +56,65 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Transactional
-    public List<ItemResponseDTO> getItemsByUserid(Long ownerId) {
-        if (userJPARepository.existsById(ownerId)) {
-            return itemJPARepository.findByOwnerId(ownerId)
-                    .stream()
-                    .map(item -> ItemMapper.toDto(item))
-                    .collect(Collectors.toList());
+    public CommentResponseDTO addNewComment(Long userId, Long itemId, CommentRequestDTO commentRequestDTO) {
+        Item item = itemJPARepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " отсутствует."));
+        User user = userJPARepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
+        Booking booking = bookingJPARepository.findByBookerIdAndItemId(userId, itemId)
+                .orElseThrow(() -> new NotFoundException("Бронирование отсутствует."));
+        if (!booking.getBooker().getId().equals(userId) ||
+                !booking.getEnd().isBefore(LocalDateTime.now())) {
+            throw new ValidationException("Автором комментария должен быть арендатор либо не закончился период аренды.");
         }
-        throw new NotFoundException("У юзера c Id " + ownerId + " отсутствуют вещи.");
+        Comment comment = CommentMapper.toModel(commentRequestDTO);
+        comment.setItem(item);
+        comment.setAuthor(user);
+        comment.setCreated(LocalDateTime.now());
+        comment = commentRepository.save(comment);
+        return CommentMapper.toDto(comment);
+    }
+
+    @Transactional
+    public List<ItemResponseDTO> getItemsByUserid(Long ownerId) {
+        User user = userJPARepository.findById(ownerId)
+                .orElseThrow(() -> new NotFoundException("Юзер с ID " + ownerId + " отсутствует."));
+        List<Item> itemsList = itemJPARepository.findByOwnerId(ownerId)
+                .orElseThrow(() -> new NotFoundException("У юзера с ID " + ownerId + " отсутствуют вещи."));
+        List<ItemResponseDTO> result = itemsList.stream()
+                .map(item -> ItemMapper.toDto(item))
+                .collect(Collectors.toList());
+        result.stream()
+                .forEach(ItemResp -> {
+                    Optional<List<Comment>> commentsList = commentRepository.findByItemId(ItemResp.getId());
+                    if (commentsList.get().size() > 0) {
+                        ItemResp.setComments(commentsList.get());
+                    }
+                });
+        return result;
     }
 
     @Transactional
     public ItemResponseDTO getItemById(Long userId, Long itemId) {
-        if (userJPARepository.existsById(userId) && itemJPARepository.existsById(itemId)) {
-            return ItemMapper.toDto(itemJPARepository.findById(itemId).get());
-        } else {
-            throw new NotFoundException("Юзер и/или вещь отсутствуют.");
-        }
+        Item item = itemJPARepository.findById(itemId)
+                .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " отсутствует."));
+        ItemResponseDTO itemResponseDTO = ItemMapper.toDto(item);
+        User user = userJPARepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
+        Optional<List<Comment>> commentsList = commentRepository.findByItemId(itemId);
+        if (commentsList.get().size() > 0 && item.getOwner().getId().equals(userId)) {
+            BookingResponseDTO lastBooking = BookingMapper.toDto(bookingJPARepository.findLastBookingByItemId(itemId));
+            itemResponseDTO.setLastBooking(lastBooking);
+            BookingResponseDTO nextBooking = BookingMapper.toDto(bookingJPARepository.findSecondLastBookingByItemId(itemId));
+            itemResponseDTO.setNextBooking(nextBooking);
+            itemResponseDTO.setComments(commentsList.get());
+            return itemResponseDTO;
+        } else if (commentsList.get().size() > 0) {
+            itemResponseDTO.setLastBooking(null);
+            itemResponseDTO.setNextBooking(null);
+            itemResponseDTO.setComments(commentsList.get());
+            return itemResponseDTO;
+        } else return itemResponseDTO;
     }
 
     @Transactional

@@ -18,6 +18,6 @@ public class BookingResponseDTO {
     private LocalDateTime start;
     private LocalDateTime end;
     private Item item;
-    private User user;
+    private User booker;
     private Status status;
 }
