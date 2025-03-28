@@ -16,32 +16,32 @@ public class BookingRequestDTO {
     private Long itemId;
 
     @AssertTrue
-    boolean isStartBeforeEnd() {
+    public boolean isStartBeforeEnd() {
         return start.isBefore(end);
     }
 
     @AssertFalse
-    boolean isEndNotInPast() {
+    public boolean isEndNotInPast() {
         return end.isBefore(LocalDateTime.now());
     }
 
     @AssertFalse
-    boolean isStartNotInPast() {
+    public boolean isStartNotInPast() {
         return start.isBefore(LocalDateTime.now());
     }
 
     @AssertFalse
-    boolean isStartNotEqualEnd() {
+    public boolean isStartNotEqualEnd() {
         return start.equals(end);
     }
 
     @AssertFalse
-    boolean isStartNotEqualNull() {
+    public boolean isStartNotEqualNull() {
         return start.equals(null);
     }
 
     @AssertFalse
-    boolean isEndNotEqualNull() {
+    public boolean isEndNotEqualNull() {
         return end.equals(null);
     }
 }

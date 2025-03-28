@@ -39,4 +39,8 @@ public class ItemResponseDTO {
         this.owner = owner;
         this.requestId = requestId;
     }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
+    }
 }

@@ -17,6 +17,17 @@ public class ItemMapper {
         );
     }
 
+    public static Item toModelFromRespDTO(ItemResponseDTO itemResponseDTO) {
+        return new Item(
+                itemResponseDTO.getId(),
+                itemResponseDTO.getName(),
+                itemResponseDTO.getDescription(),
+                itemResponseDTO.getAvailable(),
+                itemResponseDTO.getOwner(),
+                itemResponseDTO.getRequestId()
+        );
+    }
+
     public static ItemResponseDTO toDto(Item item) {
         return new ItemResponseDTO(
                 item.getId(),

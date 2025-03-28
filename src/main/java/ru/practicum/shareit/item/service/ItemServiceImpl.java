@@ -2,6 +2,7 @@ package ru.practicum.shareit.item.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingResponseDTO;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
@@ -16,6 +17,7 @@ import ru.practicum.shareit.item.dto.ItemResponseDTO;
 import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Comment;
+import ru.practicum.shareit.item.model.CommentSpecification;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.CommentJPARepository;
 import ru.practicum.shareit.item.storage.ItemJPARepository;
@@ -27,6 +29,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static org.springframework.data.jpa.domain.Specification.where;
 
 @Service
 public class ItemServiceImpl implements ItemService {
@@ -75,7 +79,6 @@ public class ItemServiceImpl implements ItemService {
         return CommentMapper.toDto(comment);
     }
 
-    @Transactional
     public List<ItemResponseDTO> getItemsByUserid(Long ownerId) {
         User user = userJPARepository.findById(ownerId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + ownerId + " отсутствует."));
@@ -84,17 +87,22 @@ public class ItemServiceImpl implements ItemService {
         List<ItemResponseDTO> result = itemsList.stream()
                 .map(item -> ItemMapper.toDto(item))
                 .collect(Collectors.toList());
-        result.stream()
-                .forEach(ItemResp -> {
-                    Optional<List<Comment>> commentsList = commentRepository.findByItemId(ItemResp.getId());
-                    if (commentsList.get().size() > 0) {
-                        ItemResp.setComments(commentsList.get());
-                    }
-                });
+        Specification<Comment> commentSpec = null;
+        for (ItemResponseDTO itemResp : result) {
+            if (commentSpec == null) {
+                commentSpec = Specification.where(CommentSpecification.hasItem(ItemMapper.toModelFromRespDTO(itemResp)));
+            } else {
+                commentSpec = commentSpec.and(CommentSpecification.hasItem(ItemMapper.toModelFromRespDTO(itemResp)));
+            }
+        }
+        List<Comment> commentsList = commentRepository.findAll(commentSpec);
+        result.forEach(ItemResp -> commentsList.forEach(comment -> {
+            if (comment.getItem().getId().equals(ItemResp.getId())) ItemResp.addComment(comment);
+                })
+        );
         return result;
     }
 
-    @Transactional
     public ItemResponseDTO getItemById(Long userId, Long itemId) {
         Item item = itemJPARepository.findById(itemId)
                 .orElseThrow(() -> new NotFoundException("Вещь с ID " + itemId + " отсутствует."));
@@ -117,7 +125,6 @@ public class ItemServiceImpl implements ItemService {
         } else return itemResponseDTO;
     }
 
-    @Transactional
     public List<ItemResponseDTO> getItemsByText(String queryParam, Long userId) {
         if (queryParam.isBlank()) {
             List<ItemResponseDTO> emtpytList = new ArrayList<>();

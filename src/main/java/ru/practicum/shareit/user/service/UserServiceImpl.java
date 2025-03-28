@@ -31,7 +31,6 @@ public class UserServiceImpl implements UserService {
         return UserMapper.toDto(user);
     }
 
-    @Transactional
     public List<UserResponseDTO> getAllUsers() {
         List<User> userList = userJPARepository.findAll();
         if (userList == null || userList.size() == 0) {
@@ -43,7 +42,6 @@ public class UserServiceImpl implements UserService {
         } else throw new NotFoundException("Список юзеров пуст.");
     }
 
-    @Transactional
     public UserResponseDTO getUserById(Long userId) {
         if (!userJPARepository.existsById(userId)) {
             throw new NotFoundException("Юзер c Id " + userId + " отсутствует.");

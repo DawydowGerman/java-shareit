@@ -71,7 +71,6 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.toDto(booking);
     }
 
-    @Transactional
     public BookingResponseDTO getBookingById(Long bookingId, Long userId) {
         Booking booking = bookingJPARepository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException("Бронирование с ID " + bookingId + " отсутствует."));
@@ -82,7 +81,6 @@ public class BookingServiceImpl implements BookingService {
         return BookingMapper.toDto(booking);
     }
 
-    @Transactional
     public List<BookingResponseDTO> getBookingByUserId(String state, Long userId) {
         User user = userJPARepository.findById(userId)
                 .orElseThrow(() -> new ForbiddenException("Юзер с ID " + userId + " отсутствует."));
@@ -127,7 +125,6 @@ public class BookingServiceImpl implements BookingService {
         }
     }
 
-    @Transactional
     public List<BookingResponseDTO> getBookingOfItemsByOwnerId(String state, Long userId) {
         User user = userJPARepository.findById(userId)
                 .orElseThrow(() -> new InternalServerException("Юзер с ID " + userId + " отсутствует."));
