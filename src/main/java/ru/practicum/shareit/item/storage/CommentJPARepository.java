@@ -7,7 +7,6 @@ import ru.practicum.shareit.item.model.Comment;
 import java.util.List;
 import java.util.Optional;
 
-public interface CommentJPARepository extends JpaRepository<Comment, Long>
-        , JpaSpecificationExecutor<Comment> {
+public interface CommentJPARepository extends JpaRepository<Comment, Long>, JpaSpecificationExecutor<Comment> {
     Optional<List<Comment>> findByItemId(Long itemId);
 }

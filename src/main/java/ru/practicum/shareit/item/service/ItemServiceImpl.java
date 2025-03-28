@@ -30,8 +30,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.data.jpa.domain.Specification.where;
-
 @Service
 public class ItemServiceImpl implements ItemService {
     private final BookingJPARepository bookingJPARepository;
