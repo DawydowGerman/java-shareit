@@ -3,9 +3,9 @@ package ru.practicum.shareit.expection;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class ValidationException extends RuntimeException {
-    public ValidationException(String message) {
+@ResponseStatus(code = HttpStatus.FORBIDDEN)
+public class ForbiddenException extends RuntimeException {
+    public ForbiddenException(String message) {
         super(message);
     }
 }

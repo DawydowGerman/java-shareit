@@ -1,18 +1,26 @@
 package ru.practicum.shareit.user.model;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import jakarta.persistence.*;
+import lombok.*;
 
-@Data
+@Entity
+@Table(name = "users")
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String name;
 
-    public User(Long id, String email, String name) {
-        this.id = id;
-        this.email = email;
-        this.name = name;
-    }
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "name")
+    private String name;
 
     public User(String email, String name) {
         this.email = email;

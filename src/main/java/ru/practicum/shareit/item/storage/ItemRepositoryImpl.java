@@ -45,7 +45,7 @@ public class ItemRepositoryImpl implements ItemRepository {
     public Optional<List<Item>> getItemsByUserid(Long userId) {
         List<Item> resultList = items.values()
                 .stream()
-                .filter(item -> item.getOwnerId().equals(userId))
+                .filter(item -> item.getOwner().getId().equals(userId))
                 .collect(Collectors.toList());
         if (resultList.size() > 0) {
             return Optional.of(resultList);
@@ -95,7 +95,7 @@ public class ItemRepositoryImpl implements ItemRepository {
 
     @Override
     public void deleteByUserIdAndItemId(long userId, long itemId) {
-        items.values().removeIf(item -> item.getId().equals(itemId) && item.getOwnerId().equals(userId));
+        items.values().removeIf(item -> item.getId().equals(itemId) && item.getOwner().getId().equals(userId));
     }
 
     private long getId() {

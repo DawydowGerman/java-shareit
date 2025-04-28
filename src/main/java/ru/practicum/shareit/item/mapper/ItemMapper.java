@@ -13,8 +13,18 @@ public class ItemMapper {
                 itemRequestDTO.getName(),
                 itemRequestDTO.getDescription(),
                 itemRequestDTO.getAvailable(),
-                itemRequestDTO.getOwnerId(),
-                itemRequestDTO.getRequest()
+                itemRequestDTO.getOwner()
+        );
+    }
+
+    public static Item toModelFromRespDTO(ItemResponseDTO itemResponseDTO) {
+        return new Item(
+                itemResponseDTO.getId(),
+                itemResponseDTO.getName(),
+                itemResponseDTO.getDescription(),
+                itemResponseDTO.getAvailable(),
+                itemResponseDTO.getOwner(),
+                itemResponseDTO.getRequestId()
         );
     }
 
@@ -24,8 +34,8 @@ public class ItemMapper {
                 item.getName(),
                 item.getDescription(),
                 item.getAvailable(),
-                item.getOwnerId(),
-                item.getRequest()
+                item.getOwner(),
+                item.getRequestId()
         );
     }
 }
