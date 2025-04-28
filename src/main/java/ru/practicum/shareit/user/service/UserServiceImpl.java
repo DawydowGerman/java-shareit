@@ -33,13 +33,20 @@ public class UserServiceImpl implements UserService {
 
     public List<UserResponseDTO> getAllUsers() {
         List<User> userList = userJPARepository.findAll();
-        if (userList == null || userList.size() == 0) {
-            List<UserResponseDTO> dtoList = userList
-                    .stream()
-                    .map(user -> UserMapper.toDto(user))
-                    .collect(Collectors.toList());
-            return dtoList;
-        } else throw new NotFoundException("Список юзеров пуст.");
+        if (userList == null || userList.size() == 0) throw new NotFoundException("Список юзеров пуст.");
+        List<UserResponseDTO> dtoList = userList
+                .stream()
+                .map(user -> UserMapper.toDto(user))
+                .collect(Collectors.toList());
+        return dtoList;
+    }
+
+    public void insertUser(String email, String name) {
+        userJPARepository.insertUser(email, name);
+    }
+
+    public Long getLastInsertId () {
+        return userJPARepository.getLastInsertId();
     }
 
     public UserResponseDTO getUserById(Long userId) {

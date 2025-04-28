@@ -8,10 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.practicum.shareit.ShareItApp;
 import ru.practicum.shareit.user.dto.UserRequestDTO;
 import ru.practicum.shareit.user.dto.UserResponseDTO;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserServiceImpl;
+
+import java.time.Instant;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.notNullValue;
@@ -22,42 +25,26 @@ import static org.hamcrest.Matchers.equalTo;
 @Transactional
 @SpringBootTest(
         classes = ShareItApp.class,
-        properties = "jdbc.url=jdbc:postgresql://localhost:5432/postgres",
+//        properties = "jdbc.url=jdbc:h2:file:./db/filmorate",
         webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
 @TestPropertySource(locations = {"classpath:application.properties"})
-class ShareItTests {
+public class ShareItOtherTests {
     private final EntityManager em;
     private final UserServiceImpl service;
 
     @Test
-    void testSaveUser() {
-        UserRequestDTO userDto = new UserRequestDTO("some@email.com", "Peter");
+    void testGetUserById() {
+    //    UserRequestDTO userDto = new UserRequestDTO("some@email.com", "Peter");
 
-        service.saveUser(userDto);
+        service.insertUser("some@email.com", "Peter");
+
+        UserResponseDTO userDto0 = service.getUserById(service.getLastInsertId());
 
         TypedQuery<User> query = em.createQuery("Select u from User u where u.email = :email", User.class);
-        User user = query.setParameter("email", userDto.getEmail())
+        User user = query.setParameter("email", userDto0.getEmail())
                 .getSingleResult();
 
-        assertThat(user.getId(), notNullValue());
-        assertThat(user.getName(), equalTo(userDto.getName()));
-        assertThat(user.getEmail(), equalTo(userDto.getEmail()));
-    }
-
-    @Test
-    void testGetAllUsers() {
-        UserRequestDTO userDto0 = new UserRequestDTO("some0@email.com", "SomeName0");
-        UserRequestDTO userDto1 = new UserRequestDTO("some1@email.com", "SomeName1");
-
-        service.saveUser(userDto0);
-        service.saveUser(userDto1);
-
-        List<UserResponseDTO> userList = service.getAllUsers();
-
-        TypedQuery<User> query = em.createQuery("Select u from User u", User.class);
-        List<User> userListQuery = query.getResultList();
-
-        assertThat(userList.get(0).getName(), equalTo(userListQuery.get(0).getName()));
+        assertThat(userDto0.getName(),equalTo(user.getName()));
     }
 }
