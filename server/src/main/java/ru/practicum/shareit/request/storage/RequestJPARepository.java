@@ -12,7 +12,7 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface RequestJPARepository extends JpaRepository<Request, Long> {
     @Query(value = "SELECT * from requests where author_id = :author_id order by id desc", nativeQuery = true)
-    Optional<List<Request>> getRequestsById(@Param("authorId") Long author_id);
+    Optional<List<Request>> getRequestsById(@Param("authorId") Long authorId);
 
     @Query(value = "SELECT * from requests order by id desc", nativeQuery = true)
     Optional<List<Request>> getAllRequests();
