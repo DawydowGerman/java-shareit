@@ -27,7 +27,7 @@ public class BookingController {
     }
 
     @GetMapping("/{bookingId}")
-    public BookingResponseDTO getBookingById( @RequestHeader(SHARER_USER_ID) Long userId,
+    public BookingResponseDTO getBookingById(@RequestHeader(SHARER_USER_ID) Long userId,
                                              @PathVariable(name = "bookingId") Long bookingId) {
         log.info("Request of booking by ID: {}", bookingId);
         return bookingServiceImpl.getBookingById(bookingId, userId);

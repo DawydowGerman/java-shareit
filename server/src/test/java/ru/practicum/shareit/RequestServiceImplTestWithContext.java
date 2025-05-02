@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @Transactional
-@ContextConfiguration(classes= ShareItApp.class)
+@ContextConfiguration(classes = ShareItApp.class)
 @SpringBootTest
 @Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @AutoConfigureMockMvc
@@ -56,7 +56,7 @@ public class RequestServiceImplTestWithContext {
 
     @Test
     public void addNewRequestNonExistentUser() {
-        Long nonExistentuser = 999l;
+        Long nonExistentuser = 999L;
 
         RequestIncomingDTO request = new RequestIncomingDTO("SomeDesc", LocalDateTime.now(), null);
 
@@ -136,7 +136,7 @@ public class RequestServiceImplTestWithContext {
 
     @Test
     public void getRequestByIdNonExistentuser() {
-        Long nonExistentuser = 999l;
+        Long nonExistentuser = 999L;
 
         UserRequestDTO userRequestDTO0 = new UserRequestDTO("somemail0@gmail.com", "some0Name");
         UserResponseDTO user = userServiceImpl.saveUser(userRequestDTO0);

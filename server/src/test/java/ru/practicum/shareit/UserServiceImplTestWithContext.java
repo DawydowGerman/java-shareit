@@ -18,7 +18,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@ContextConfiguration(classes= ShareItApp.class)
+@ContextConfiguration(classes = ShareItApp.class)
 @SpringBootTest
 @Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @AutoConfigureMockMvc
@@ -75,7 +75,7 @@ public class UserServiceImplTestWithContext {
 
     @Test
     public void  getUserByIdReturnsNotFoundException() {
-        Long nonExistentuserID = 999l;
+        Long nonExistentuserID = 999L;
 
         assertThrows(NotFoundException.class, () -> {
             userServiceImpl.getUserById(nonExistentuserID);
@@ -97,7 +97,7 @@ public class UserServiceImplTestWithContext {
 
     @Test
     public void  updateReturnsNotFoundException() {
-        Long nonExistentuserID = 999l;
+        Long nonExistentuserID = 999L;
         UserRequestDTO updatedUserRequest = new UserRequestDTO("updated@gmail.com", "some1Name");
 
         assertThrows(NotFoundException.class, () -> {
@@ -120,7 +120,7 @@ public class UserServiceImplTestWithContext {
     @Test
     @Transactional
     public void removeNonExistentItemShouldThrowNotFoundException() throws Exception {
-        Long nonExistentItem = 999l;
+        Long nonExistentItem = 999L;
 
         assertThrows(NotFoundException.class, () -> {
             userServiceImpl.remove(nonExistentItem);

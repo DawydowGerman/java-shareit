@@ -43,12 +43,12 @@ public class UserControllerTestWithContext {
             "someName"
     );
     UserResponseDTO userResponce = new UserResponseDTO(
-            1l,
+            1L,
             "somemail@gmail.com",
             "someName"
     );
     UserResponseDTO userResponce0 = new UserResponseDTO(
-            2l,
+            2L,
             "somemail0@gmail.com",
             "someName0"
     );
@@ -194,7 +194,7 @@ public class UserControllerTestWithContext {
 
     @Test
     void deleteItemNoSuchUserExists() throws Exception {
-        Long id = 99l;
+        Long id = 99L;
         doThrow(new NotFoundException("Юзер не найден с id = " + id))
                 .when(userService)
                 .remove(id);

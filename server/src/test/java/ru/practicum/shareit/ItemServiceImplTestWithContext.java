@@ -31,7 +31,7 @@ import ru.practicum.shareit.user.storage.UserJPARepository;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@ContextConfiguration(classes= ShareItApp.class)
+@ContextConfiguration(classes = ShareItApp.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -56,7 +56,7 @@ public class ItemServiceImplTestWithContext {
     @BeforeEach
     void setUp() throws Exception {
         testUser = new User(
-                1l,
+                1L,
                 "vlad@gmail.com",
                 "Vladimir"
         );
@@ -84,7 +84,7 @@ public class ItemServiceImplTestWithContext {
     @Test
     @Transactional
     public void addNewItemUserNotExistsThrowNotFoundException() throws Exception {
-        Long nonExistentUserId = 999l;
+        Long nonExistentUserId = 999L;
 
         ItemRequestDTO itemRequestDTO = new ItemRequestDTO(
                 "someName",
@@ -198,7 +198,7 @@ public class ItemServiceImplTestWithContext {
     @Test
     @Transactional
     public void getItemsByUserHasNoItemsShouldThrowNotFoundException() throws Exception {
-        Long nonExistentUserId = 999l;
+        Long nonExistentUserId = 999L;
                 assertThrows(NotFoundException.class, () -> {
             itemService.getItemsByUserid(nonExistentUserId);
         });
@@ -227,7 +227,7 @@ public class ItemServiceImplTestWithContext {
     @Test
     @Transactional
     public void getItemByIdTriesToRetrieveNonExistentItems() throws Exception {
-        Long nonExistentitem = 999l;
+        Long nonExistentitem = 999L;
 
         UserRequestDTO userRequestDTO0 = new UserRequestDTO("somemail0@gmail.com", "some0Name");
         UserResponseDTO userOwner = userServiceImpl.saveUser(userRequestDTO0);
@@ -261,7 +261,7 @@ public class ItemServiceImplTestWithContext {
     @Test
     @Transactional
     public void getItemsByTextTriesToRetrieveNonExistentItems() throws Exception {
-        Long nonExistentUser = 999l;
+        Long nonExistentUser = 999L;
 
         UserRequestDTO userRequestDTO0 = new UserRequestDTO("somemail5@gmail.com", "some5Name");
         UserResponseDTO user = userServiceImpl.saveUser(userRequestDTO0);
@@ -314,7 +314,7 @@ public class ItemServiceImplTestWithContext {
         UserRequestDTO userRequestDTO0 = new UserRequestDTO("somemail6@gmail.com", "some6Name");
         UserResponseDTO user = userServiceImpl.saveUser(userRequestDTO0);
 
-        Long nonExistentItem = 999l;
+        Long nonExistentItem = 999L;
 
         ItemRequestDTO updateRequest = new ItemRequestDTO(
                 "someName6",
@@ -356,7 +356,7 @@ public class ItemServiceImplTestWithContext {
         UserRequestDTO userRequestDTO0 = new UserRequestDTO("somemail8@gmail.com", "some8Name");
         UserResponseDTO user = userServiceImpl.saveUser(userRequestDTO0);
 
-        Long nonExistentItem = 999l;
+        Long nonExistentItem = 999L;
 
         assertThrows(NotFoundException.class, () -> {
             itemService.deleteItem(user.getId(), nonExistentItem);

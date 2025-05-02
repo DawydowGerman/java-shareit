@@ -54,7 +54,7 @@ public class ItemServiceImpl implements ItemService {
         itemRequestDTO.setOwner(userJPARepository.findById(userId).get());
         Item item = ItemMapper.toModel(itemRequestDTO);
         if (itemRequestDTO.getRequestId() == null || itemRequestDTO.getRequestId() < 0) {
-            item.setRequestId(1l);
+            item.setRequestId(1L);
         } else {
             item.setRequestId(itemRequestDTO.getRequestId());
         }

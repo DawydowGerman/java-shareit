@@ -22,7 +22,7 @@ public class RequestOutcomingDTO {
     private User author;
     private List<AnswerToRequest> items;
 
-    public RequestOutcomingDTO (Long id, String description,
+    public RequestOutcomingDTO(Long id, String description,
                                 LocalDateTime created, User author) {
         this.id = id;
         this.description = description;

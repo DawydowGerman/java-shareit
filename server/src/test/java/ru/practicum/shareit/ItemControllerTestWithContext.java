@@ -65,7 +65,7 @@ public class ItemControllerTestWithContext {
     );
 
     CommentResponseDTO commentResponse = new CommentResponseDTO(
-            1l,
+            1L,
             "someComment",
             "someName",
             LocalDateTime.now()
@@ -78,7 +78,7 @@ public class ItemControllerTestWithContext {
                 .thenReturn(itemResp);
 
         mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(itemReq)))
                 .andExpect(status().isOk())
@@ -93,7 +93,7 @@ public class ItemControllerTestWithContext {
                 .thenThrow(new NotFoundException("Юзер отсутствуют"));
 
         mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(itemReq)))
                 .andExpect(status().isNotFound());
@@ -119,7 +119,7 @@ public class ItemControllerTestWithContext {
     @Test
     public void addNewItemNullBody() throws Exception {
         mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("null"))
                 .andExpect(status().isBadRequest());
@@ -128,7 +128,7 @@ public class ItemControllerTestWithContext {
     @Test
     public void addNewItemMalformedJson() throws Exception {
         mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{malformed}"))
                 .andExpect(status().isBadRequest());
@@ -143,7 +143,7 @@ public class ItemControllerTestWithContext {
                 .thenReturn(commentResponse);
 
         mvc.perform(post("/items/{itemId}/comment", itemId)
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(commentRequest)))
                 .andExpect(status().isOk())
@@ -155,7 +155,7 @@ public class ItemControllerTestWithContext {
     @Test
     public void addNewCommentNotFoundException() throws Exception {
         Long itemId = 9L;
-        Long userId = 10l;
+        Long userId = 10L;
 
         when(itemService.addNewComment(anyLong(), anyLong(), any(CommentRequestDTO.class)))
                 .thenThrow(new NotFoundException("Юзер с ID " + userId + " отсутствует."));
@@ -170,7 +170,7 @@ public class ItemControllerTestWithContext {
     @Test
     public void addNewCommentValidationException() throws Exception {
         Long itemId = 9L;
-        Long userId = 10l;
+        Long userId = 10L;
 
         when(itemService.addNewComment(anyLong(), anyLong(), any(CommentRequestDTO.class)))
                 .thenThrow(new ValidationException("Автором комментария должен быть арендатор либо не закончился период аренды."));
@@ -208,7 +208,7 @@ public class ItemControllerTestWithContext {
         Long itemId = 9L;
 
         mvc.perform(post("/items/{itemId}/comment", itemId)
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("null"))
                 .andExpect(status().isBadRequest());
@@ -219,7 +219,7 @@ public class ItemControllerTestWithContext {
         Long itemId = 9L;
 
         mvc.perform(post("/items/{itemId}/comment", itemId)
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{malformed}"))
                 .andExpect(status().isBadRequest());
@@ -429,7 +429,7 @@ public class ItemControllerTestWithContext {
                 .thenReturn(itemResp);
 
         mvc.perform(patch("/items/{itemId}", "1")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(itemReq)))
                 .andExpect(status().isOk())
@@ -444,7 +444,7 @@ public class ItemControllerTestWithContext {
                 .thenThrow(new NotFoundException("Юзер и/или вещь отсутствуют."));
 
         mvc.perform(patch("/items/{itemId}", "1")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(itemReq)))
                 .andExpect(status().isNotFound());

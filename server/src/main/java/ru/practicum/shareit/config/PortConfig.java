@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class PortConfig implements WebServerFactoryCustomizer<ConfigurableServletWebServerFactory> {
-    public void customize(ConfigurableServletWebServerFactory factory){
+    public void customize(ConfigurableServletWebServerFactory factory) {
         factory.setPort(9090);
     }
 }

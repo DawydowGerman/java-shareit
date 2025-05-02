@@ -41,23 +41,23 @@ public class RequestControllerTestWithContext {
     private MockMvc mvc;
 
     User user = new User(
-            1l,
+            1L,
             "some@mail.ru",
             "someName"
     );
 
     AnswerToRequest answerToRequest0 = new AnswerToRequest(
-            1l,
+            1L,
             "someName0",
             "someDesc0",
-            2l
+            2L
     );
 
     AnswerToRequest answerToRequest1 = new AnswerToRequest(
-            2l,
+            2L,
             "someName1",
             "someDesc1",
-            4l
+            4L
     );
 
     List<AnswerToRequest> answersList = Arrays.asList(answerToRequest0, answerToRequest1);
@@ -75,7 +75,7 @@ public class RequestControllerTestWithContext {
     );
 
     RequestOutcomingDTO outcomingDTO = new RequestOutcomingDTO(
-            1l,
+            1L,
             "someDesc",
             LocalDateTime.now(),
             user,
@@ -83,7 +83,7 @@ public class RequestControllerTestWithContext {
     );
 
     RequestOutcomingDTO outcomingDTO1 = new RequestOutcomingDTO(
-            2l,
+            2L,
             "someDesc1",
             LocalDateTime.now(),
             user,
@@ -99,7 +99,7 @@ public class RequestControllerTestWithContext {
                 .thenReturn(outcomingDTO);
 
         mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(incomingDTO0)))
                 .andExpect(status().isOk())
@@ -113,7 +113,7 @@ public class RequestControllerTestWithContext {
                 .thenThrow(new NotFoundException("Юзер отсутствуют"));
 
         mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(incomingDTO0)))
                 .andExpect(status().isNotFound());
@@ -139,7 +139,7 @@ public class RequestControllerTestWithContext {
     @Test
     public void addNewRequestNullBody() throws Exception {
         mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("null"))
                 .andExpect(status().isBadRequest());
@@ -148,7 +148,7 @@ public class RequestControllerTestWithContext {
     @Test
     public void addNewRequestMalformedJson() throws Exception {
         mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{malformed}"))
                 .andExpect(status().isBadRequest());

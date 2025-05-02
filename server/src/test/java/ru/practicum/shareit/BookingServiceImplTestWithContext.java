@@ -28,7 +28,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Transactional
-@ContextConfiguration(classes= ShareItApp.class)
+@ContextConfiguration(classes = ShareItApp.class)
 @SpringBootTest
 @Sql(scripts = "/cleanup.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 @AutoConfigureMockMvc
@@ -89,7 +89,7 @@ public class BookingServiceImplTestWithContext {
         UserRequestDTO userRequestDTO1 = new UserRequestDTO("somemail1@gmail.com", "some1Name");
         UserResponseDTO userBooker = userServiceImpl.saveUser(userRequestDTO1);
 
-        Long nonExistentUserId = 99l;
+        Long nonExistentUserId = 99L;
 
         BookingRequestDTO bookingRequest = new BookingRequestDTO(
                 LocalDateTime.of(2025, 5, 1, 10, 0),
@@ -257,7 +257,7 @@ public class BookingServiceImplTestWithContext {
 
     @Test
     public void getBookingByUserIdForbiddenException() {
-        Long nonexistentuser = 99l;
+        Long nonexistentuser = 99L;
 
         UserRequestDTO userRequestDTO0 = new UserRequestDTO("somemail0@gmail.com", "some0Name");
         UserResponseDTO userOwner = userServiceImpl.saveUser(userRequestDTO0);

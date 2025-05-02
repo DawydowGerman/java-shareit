@@ -52,7 +52,7 @@ public class BookingControllerTestWithContext {
     );
 
     BookingResponseDTO bookingResponse = new BookingResponseDTO(
-            1l,
+            1L,
             LocalDateTime.of(2023, 6, 15, 10, 0),
             LocalDateTime.of(2023, 6, 15, 12, 30),
             null,
@@ -61,7 +61,7 @@ public class BookingControllerTestWithContext {
     );
 
     BookingResponseDTO bookingResponse1 = new BookingResponseDTO(
-            2l,
+            2L,
             LocalDateTime.of(2023, 6, 15, 10, 0),
             LocalDateTime.of(2023, 6, 15, 12, 30),
             null,
@@ -69,8 +69,7 @@ public class BookingControllerTestWithContext {
             null
     );
 
-    List<BookingResponseDTO> BookingResponseDTOList = Arrays.asList(bookingResponse, bookingResponse1);
-
+    List<BookingResponseDTO> bookingResponseDTOList = Arrays.asList(bookingResponse, bookingResponse1);
 
     // 1. ========== addNewBooking Tests ==========
     @Test
@@ -79,7 +78,7 @@ public class BookingControllerTestWithContext {
                 .thenReturn(bookingResponse);
 
         mvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bookingRequest)))
                 .andExpect(status().isOk())
@@ -94,7 +93,7 @@ public class BookingControllerTestWithContext {
                 .thenThrow(new NotFoundException("Юзер отсутствует"));
 
         mvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(bookingRequest)))
                 .andExpect(status().isNotFound());
@@ -114,8 +113,8 @@ public class BookingControllerTestWithContext {
         when(bookingService.getBookingById(anyLong(), anyLong()))
                 .thenReturn(bookingResponse);
 
-        mvc.perform(get("/bookings/{bookingId}", 1l)
-                        .header("X-Sharer-User-Id", 2l)
+        mvc.perform(get("/bookings/{bookingId}", 1L)
+                        .header("X-Sharer-User-Id", 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(bookingResponse.getId()))
@@ -130,8 +129,8 @@ public class BookingControllerTestWithContext {
         when(bookingService.getBookingById(anyLong(), anyLong()))
                 .thenThrow(new NotFoundException("Бронирование с ID " + bookingId + " отсутствует."));
 
-        mvc.perform(get("/bookings/{bookingId}", 1l)
-                        .header("X-Sharer-User-Id", 2l)
+        mvc.perform(get("/bookings/{bookingId}", 1L)
+                        .header("X-Sharer-User-Id", 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -159,10 +158,10 @@ public class BookingControllerTestWithContext {
     @Test
     public void getBookingByUserIdOrdinaryCase() throws Exception {
         when(bookingService.getBookingByUserId(anyString(), anyLong()))
-                .thenReturn(BookingResponseDTOList);
+                .thenReturn(bookingResponseDTOList);
 
-        mvc.perform(get("/bookings", 1l)
-                        .header("X-Sharer-User-Id", 2l)
+        mvc.perform(get("/bookings", 1L)
+                        .header("X-Sharer-User-Id", 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(bookingResponse.getId()))
@@ -173,13 +172,13 @@ public class BookingControllerTestWithContext {
 
     @Test
     public void getBookingByUserIdNotFoundException() throws Exception {
-        Long userId = 99l;
+        Long userId = 99L;
 
         when(bookingService.getBookingByUserId(anyString(), anyLong()))
                 .thenThrow(new NotFoundException("Юзер с ID " + userId + " отсутствует."));
 
-        mvc.perform(get("/bookings", 1l)
-                        .header("X-Sharer-User-Id", 2l)
+        mvc.perform(get("/bookings", 1L)
+                        .header("X-Sharer-User-Id", 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -207,10 +206,10 @@ public class BookingControllerTestWithContext {
     @Test
     public void getBookingOfItemsByOwnerIdOrdinaryCase() throws Exception {
         when(bookingService.getBookingOfItemsByOwnerId(anyString(), anyLong()))
-                .thenReturn(BookingResponseDTOList);
+                .thenReturn(bookingResponseDTOList);
 
-        mvc.perform(get("/bookings/owner", 1l)
-                        .header("X-Sharer-User-Id", 2l)
+        mvc.perform(get("/bookings/owner", 1L)
+                        .header("X-Sharer-User-Id", 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id").value(bookingResponse.getId()))
@@ -221,13 +220,13 @@ public class BookingControllerTestWithContext {
 
     @Test
     public void getBookingOfItemsByOwnerIdNotFoundException() throws Exception {
-        Long userId = 99l;
+        Long userId = 99L;
 
         when(bookingService.getBookingOfItemsByOwnerId(anyString(), anyLong()))
                 .thenThrow(new NotFoundException("Юзер с ID " + userId + " отсутствует."));
 
-        mvc.perform(get("/bookings/owner", 1l)
-                        .header("X-Sharer-User-Id", 2l)
+        mvc.perform(get("/bookings/owner", 1L)
+                        .header("X-Sharer-User-Id", 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
     }
@@ -254,14 +253,14 @@ public class BookingControllerTestWithContext {
     // 5. ========== update Tests ==========
     @Test
     public void updateOrdinaryCase() throws Exception {
-        Long bookingId = 99l;
+        Long bookingId = 99L;
         Boolean approved = true;
 
         when(bookingService.update(anyLong(), anyLong(), any(Boolean.class)))
                 .thenReturn(bookingResponse);
 
         mvc.perform(patch("/bookings/{bookingId}", bookingId)
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .param("approved", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -269,16 +268,17 @@ public class BookingControllerTestWithContext {
                 .andExpect(jsonPath("$.start").value("2023-06-15T10:00:00"))
                 .andExpect(jsonPath("$.end").value("2023-06-15T12:30:00"));
     }
+
     @Test
     public void updateUserNotFoundException() throws Exception {
-        Long ownerId = 99l;
-        Long bookingId = 99l;
+        Long ownerId = 99L;
+        Long bookingId = 99L;
 
         when(bookingService.update(anyLong(), anyLong(), any(Boolean.class)))
                 .thenThrow(new NotFoundException("Юзер с ID " + ownerId + " отсутствует."));
 
         mvc.perform(patch("/bookings/{bookingId}", bookingId)
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .param("approved", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
@@ -286,14 +286,14 @@ public class BookingControllerTestWithContext {
 
     @Test
     public void updateBookingNotFoundException() throws Exception {
-        Long ownerId = 99l;
-        Long bookingId = 99l;
+        Long ownerId = 99L;
+        Long bookingId = 99L;
 
         when(bookingService.update(anyLong(), anyLong(), any(Boolean.class)))
                 .thenThrow(new NotFoundException("Бронирование с ID " + bookingId + " отсутствует."));
 
         mvc.perform(patch("/bookings/{bookingId}", bookingId)
-                        .header("X-Sharer-User-Id", 1l)
+                        .header("X-Sharer-User-Id", 1L)
                         .param("approved", "true")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
