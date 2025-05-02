@@ -11,6 +11,8 @@ import java.sql.Connection;
 @Component
 public class SqlInitializer {
     private final DataSource dataSource;
+    private static final int MAX_RETRIES = 5;
+    private static final long RETRY_DELAY_MS = 2000;
 
     public SqlInitializer(DataSource dataSource) {
         this.dataSource = dataSource;
@@ -18,8 +20,18 @@ public class SqlInitializer {
 
     @PostConstruct
     public void init() throws Exception {
-        try (Connection conn = dataSource.getConnection()) {
-            ScriptUtils.executeSqlScript(conn, new ClassPathResource("schema.sql"));
+        int attempt = 0;
+        while (attempt < MAX_RETRIES) {
+            try (Connection conn = dataSource.getConnection()) {
+                ScriptUtils.executeSqlScript(conn, new ClassPathResource("schema.sql"));
+                break;
+            } catch (Exception e) {
+                attempt++;
+                if (attempt == MAX_RETRIES) {
+                    throw new RuntimeException("Failed to initialize SQL after " + MAX_RETRIES + " attempts", e);
+                }
+                Thread.sleep(RETRY_DELAY_MS);
+            }
         }
     }
 }
