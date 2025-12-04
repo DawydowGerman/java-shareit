@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface UserRepository {
     User saveUser(User user);
 
-    Optional<List<User>> findAll();
+    List<User> findAll();
 
     boolean isUserIdExists(Long id);
 

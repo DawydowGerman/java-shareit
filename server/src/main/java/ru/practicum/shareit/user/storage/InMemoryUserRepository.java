@@ -26,13 +26,12 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     @Override
-    public Optional<List<User>> findAll() {
-        if (users.size() == 0) {
-            log.error("Ошибка при получении списка юзеров");
-            return Optional.empty();
+    public List<User> findAll() {
+        if (users.isEmpty()) {
+            log.error("Список юзеров пуст.");
+            return Collections.emptyList();
         }
-        List<User> resultList = new ArrayList<>(users.values());
-        return Optional.of(resultList);
+        return new ArrayList<>(users.values());
     }
 
     @Override
@@ -82,8 +81,8 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     private boolean checkEmail(User user) {
-        if (findAll().isPresent()) {
-            return findAll().get()
+        if (!findAll().isEmpty()) {
+            return findAll()
                     .stream()
                     .filter(u -> u.getEmail().equals(user.getEmail()))
                     .anyMatch(u -> u != user);
