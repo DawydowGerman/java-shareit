@@ -81,12 +81,7 @@ public class InMemoryUserRepository implements UserRepository {
     }
 
     private boolean checkEmail(User user) {
-        if (!findAll().isEmpty()) {
-            return findAll()
-                    .stream()
-                    .filter(u -> u.getEmail().equals(user.getEmail()))
-                    .anyMatch(u -> u != user);
-        }
-        return false;
+        return findAll().stream()
+                        .anyMatch(u -> u.getEmail().equals(user.getEmail()));
     }
 }
