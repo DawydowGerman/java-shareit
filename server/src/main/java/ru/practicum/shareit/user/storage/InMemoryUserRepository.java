@@ -36,11 +36,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public Optional<User> getUserById(Long id) {
-        if (users.containsKey(id)) {
-            return Optional.of(users.get(id));
-        }
-        log.error("Ошибка при получении юзера с ID" + id);
-        return Optional.empty();
+        return Optional.of(users.get(id));
     }
 
     @Override
