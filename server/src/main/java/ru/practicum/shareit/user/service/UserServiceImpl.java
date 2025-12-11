@@ -31,12 +31,14 @@ public class UserServiceImpl implements UserService {
 
     public List<UserResponseDTO> getAllUsers() {
         List<User> userList = userJPARepository.findAll();
-        if (userList == null || userList.size() == 0) throw new NotFoundException("Список юзеров пуст.");
-        List<UserResponseDTO> dtoList = userList
-                .stream()
+
+        if (userList.isEmpty()) {
+            throw new NotFoundException("Список юзеров пуст.");
+        }
+
+        return userList.stream()
                 .map(user -> UserMapper.toDto(user))
                 .collect(Collectors.toList());
-        return dtoList;
     }
 
     public UserResponseDTO getUserById(Long userId) {
