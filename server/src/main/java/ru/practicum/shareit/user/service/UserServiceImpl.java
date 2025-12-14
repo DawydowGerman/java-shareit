@@ -50,17 +50,16 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public UserResponseDTO update(Long id, UserRequestDTO userRequestDTO) {
-        if (userJPARepository.existsById(id)) {
-            User user = userJPARepository.findById(id).get();
-            for (String f : userRequestDTO.getNonNullFields().get()) {
-                if (f.equals("email")) user.setEmail(userRequestDTO.getEmail());
-                if (f.equals("name")) user.setName(userRequestDTO.getName());
-            }
-            user = userJPARepository.save(user);
-            return UserMapper.toDto(user);
-        } else {
-            throw new NotFoundException("Юзер отсутствуют");
+        if (!userJPARepository.existsById(id)) {
+            throw new NotFoundException("Юзер c Id " + id + " отсутствует.");
         }
+        User user = userJPARepository.findById(id).get();
+        for (String f : userRequestDTO.getNonNullFields().get()) {
+            if (f.equals("email")) user.setEmail(userRequestDTO.getEmail());
+            if (f.equals("name")) user.setName(userRequestDTO.getName());
+        }
+        user = userJPARepository.save(user);
+        return UserMapper.toDto(user);
     }
 
     @Transactional
