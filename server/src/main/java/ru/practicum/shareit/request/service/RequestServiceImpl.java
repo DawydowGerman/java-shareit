@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.expection.NotFoundException;
+import ru.practicum.shareit.expection.ValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.storage.ItemJPARepository;
 import ru.practicum.shareit.request.dto.RequestIncomingDTO;
@@ -41,6 +42,9 @@ public class RequestServiceImpl implements RequestService {
     public RequestOutcomingDTO addNewRequest(Long userId, RequestIncomingDTO incomingDTO) {
         if (!userJPARepository.existsById(userId)) {
             throw new NotFoundException("Юзер отсутствует");
+        }
+        if (incomingDTO.getDescription() == null || incomingDTO.getDescription().isEmpty()) {
+            throw new ValidationException("Description cannot be null or empty");
         }
         incomingDTO.setAuthor(userJPARepository.findById(userId).get());
         incomingDTO.setCreated(LocalDateTime.now());
