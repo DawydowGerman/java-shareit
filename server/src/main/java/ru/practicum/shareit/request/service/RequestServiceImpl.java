@@ -56,13 +56,12 @@ public class RequestServiceImpl implements RequestService {
     public List<RequestOutcomingDTO> getAllRequests(Long userId) {
         User user = userJPARepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
-        Optional<List<Request>> requestList = requestJPARepository.getAllRequests();
+        List<Request> requestList = requestJPARepository.getAllRequests();
         if (requestList.isEmpty()) {
             System.out.println("Запросы на вещи отсутствуют");
             return Collections.emptyList();
         }
-        return requestList.get()
-                .stream()
+        return requestList.stream()
                 .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
     }

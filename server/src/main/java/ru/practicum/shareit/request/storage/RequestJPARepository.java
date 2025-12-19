@@ -15,7 +15,7 @@ public interface RequestJPARepository extends JpaRepository<Request, Long> {
     Optional<List<Request>> getRequestsById(@Param("author_id") Long authorId);
 
     @Query(value = "SELECT * from requests order by id desc", nativeQuery = true)
-    Optional<List<Request>> getAllRequests();
+    List<Request> getAllRequests();
 
     @Query(value = "SELECT * from requests where id = :id", nativeQuery = true)
     Optional<Request> getRequestById(@Param("id") Long id);
