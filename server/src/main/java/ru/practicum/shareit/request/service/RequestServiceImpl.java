@@ -69,26 +69,25 @@ public class RequestServiceImpl implements RequestService {
     public List<RequestOutcomingDTO> getOwnRequests(Long userId) {
         User user = userJPARepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
-        List<Request> requestList = requestJPARepository.getRequestsById(userId);
-        if (requestList.isEmpty()) {
+        List<RequestOutcomingDTO> result = requestJPARepository.getRequestsById(userId).stream()
+                .map(RequestMapper::toDto)
+                .collect(Collectors.toList());
+        if (result.isEmpty()) {
             System.out.println("Пользователь с id " + userId + " не имеет запросов.");
             return Collections.emptyList();
         }
-        List<RequestOutcomingDTO> result = requestList.stream()
-                .map(RequestMapper::toDto)
-                .collect(Collectors.toList());
         List<Long> requestIdList = result.stream()
-                                         .map(req -> req.getId())
-                                         .collect(Collectors.toList());
-        if (itemJPARepository.getItemsByRequest(requestIdList).isPresent()) {
-            List<Item> itemList = itemJPARepository.getItemsByRequest(requestIdList).get();
-            result.forEach(r -> itemList.forEach(item -> {
-                        if (r.getId().equals(item.getRequestId())) {
-                            r.addToAnswerList(AnswerMapper.toAnswer(item));
-                        }
-                    }));
+                .map(req -> req.getId())
+                .collect(Collectors.toList());
+        List<Item> itemList = itemJPARepository.getItemsByRequest(requestIdList);
+        if (itemList.isEmpty()) {
             return result;
         }
+        result.forEach(r -> itemList.forEach(item -> {
+            if (r.getId().equals(item.getRequestId())) {
+                r.addToAnswerList(AnswerMapper.toAnswer(item));
+            }
+        }));
         return result;
     }
 
@@ -102,8 +101,8 @@ public class RequestServiceImpl implements RequestService {
         }
         RequestOutcomingDTO result = RequestMapper.toDto(request.get());
         List<Long> idList = Arrays.asList(result.getId());
-        if (itemJPARepository.getItemsByRequest(idList).isPresent()) {
-            List<Item> itemList = itemJPARepository.getItemsByRequest(idList).get();
+        if (!itemJPARepository.getItemsByRequest(idList).isEmpty()) {
+            List<Item> itemList = itemJPARepository.getItemsByRequest(idList);
             List<AnswerToRequest> items = itemList.stream()
                     .map(AnswerMapper::toAnswer)
                     .collect(Collectors.toList());
