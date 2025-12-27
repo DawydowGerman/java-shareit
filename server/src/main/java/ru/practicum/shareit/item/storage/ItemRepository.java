@@ -7,7 +7,7 @@ import java.util.Optional;
 public interface ItemRepository {
     Item save(Item item);
 
-    Optional<List<Item>> findAll();
+    List<Item> findAll();
 
     Optional<Item> getItemById(Long id);
 

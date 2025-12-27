@@ -23,13 +23,12 @@ public class ItemRepositoryImpl implements ItemRepository {
     }
 
     @Override
-    public Optional<List<Item>> findAll() {
-        if (items.size() == 0) {
-            log.error("Ошибка при получении списка вещей");
-            return Optional.empty();
+    public List<Item> findAll() {
+        if (items.isEmpty()) {
+            log.error("Список вещей пуст");
+            return List.of();
         }
-        List<Item> resultList = new ArrayList<>(items.values());
-        return Optional.of(resultList);
+        return new ArrayList<>(items.values());
     }
 
     @Override
