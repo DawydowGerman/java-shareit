@@ -9,7 +9,7 @@ import ru.practicum.shareit.user.model.User;
 
 import java.util.*;
 
-@Repository
+@Repository("inMemoryRepository")
 public class InMemoryUserRepository implements UserRepository {
     private final Map<Long, User> users = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
