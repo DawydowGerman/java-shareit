@@ -17,7 +17,7 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User saveUser(User user) {
         user.setId(getId());
-        if (checkEmail(user)) {
+        if (existsByEmail(user)) {
             throw new InternalServerException("Этот имейл уже используется");
         }
         users.put(user.getId(), user);
@@ -41,7 +41,7 @@ public class InMemoryUserRepository implements UserRepository {
 
     @Override
     public User update(User newUser) {
-        if (checkEmail(newUser)) {
+        if (existsByEmail(newUser)) {
             throw new InternalServerException("Этот имейл уже используется");
         }
         User oldUser = users.get(newUser.getId());
@@ -68,16 +68,17 @@ public class InMemoryUserRepository implements UserRepository {
         log.debug("Пользователь с id " + id + " удален.");
     }
 
+    @Override
+    public boolean existsByEmail(User user) {
+        return findAll().stream()
+                        .anyMatch(u -> u.getEmail().equals(user.getEmail()));
+    }
+
     private long getId() {
         long lastId = users.values().stream()
                 .mapToLong(User::getId)
                 .max()
                 .orElse(0);
         return lastId + 1;
-    }
-
-    private boolean checkEmail(User user) {
-        return findAll().stream()
-                        .anyMatch(u -> u.getEmail().equals(user.getEmail()));
     }
 }

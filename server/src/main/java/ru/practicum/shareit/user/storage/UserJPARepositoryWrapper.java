@@ -43,4 +43,9 @@ public class UserJPARepositoryWrapper implements UserRepository {
     public void remove(Long id) {
         jpaRepository.deleteById(id);
     }
+
+    @Override
+    public boolean existsByEmail(User user) {
+        return jpaRepository.existsByEmail(user.getEmail());
+    }
 }
