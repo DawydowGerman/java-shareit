@@ -4,6 +4,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.expection.InternalServerException;
 import ru.practicum.shareit.expection.NotFoundException;
 import ru.practicum.shareit.user.dto.UserRequestDTO;
 import ru.practicum.shareit.user.dto.UserResponseDTO;
@@ -26,6 +27,9 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public UserResponseDTO saveUser(UserRequestDTO userRequestDTO) {
         User user = UserMapper.toModel(userRequestDTO);
+        if (userRepository.existsByEmail(user)) {
+            throw new InternalServerException("Этот имейл уже используется");
+        }
         user = userRepository.saveUser(user);
         return UserMapper.toDto(user);
     }

@@ -17,9 +17,6 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public User saveUser(User user) {
         user.setId(getId());
-        if (existsByEmail(user)) {
-            throw new InternalServerException("Этот имейл уже используется");
-        }
         users.put(user.getId(), user);
         log.debug("Добавлен юзер с Id {}", user.getId());
         return user;
