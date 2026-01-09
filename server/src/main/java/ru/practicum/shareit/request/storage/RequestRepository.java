@@ -12,7 +12,7 @@ public interface RequestRepository {
 
     Request update(Request newRequest);
 
-    Optional<Request> getUserById(Long id);
+    Optional<Request> getRequestById(Long id);
 
     void remove(Long id);
 }
