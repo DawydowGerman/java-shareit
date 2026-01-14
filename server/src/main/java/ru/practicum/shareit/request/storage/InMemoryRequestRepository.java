@@ -14,5 +14,12 @@ public class InMemoryRequestRepository {
     private final Map<Long, Request> requests = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(RequestController.class);
 
+    private long getId() {
+        long lastId = requests.values().stream()
+                .mapToLong(Request::getId)
+                .max()
+                .orElse(0);
+        return lastId + 1;
+    }
 
 }
