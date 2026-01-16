@@ -14,6 +14,13 @@ public class InMemoryRequestRepository {
     private final Map<Long, Request> requests = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(RequestController.class);
 
+    public Request save(Request request) {
+        request.setId(getId());
+        requests.put(request.getId(), request);
+        log.debug("Добавлен реквест с Id {}", request.getId());
+        return request;
+    }
+
     private long getId() {
         long lastId = requests.values().stream()
                 .mapToLong(Request::getId)
