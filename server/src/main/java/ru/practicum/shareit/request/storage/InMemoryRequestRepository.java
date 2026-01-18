@@ -6,8 +6,7 @@ import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.request.controller.RequestController;
 import ru.practicum.shareit.request.model.Request;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Repository("inMemoryRepository")
 public class InMemoryRequestRepository {
@@ -19,6 +18,14 @@ public class InMemoryRequestRepository {
         requests.put(request.getId(), request);
         log.debug("Добавлен реквест с Id {}", request.getId());
         return request;
+    }
+
+    public List<Request> findAll() {
+        if (requests.isEmpty()) {
+            log.error("Список реквестов пуст.");
+            return Collections.emptyList();
+        }
+        return new ArrayList<>(requests.values());
     }
 
     private long getId() {
