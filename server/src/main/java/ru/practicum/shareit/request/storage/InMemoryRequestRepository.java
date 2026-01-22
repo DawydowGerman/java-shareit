@@ -42,6 +42,9 @@ public class InMemoryRequestRepository {
         return oldRequest;
     }
 
+    public boolean isRequestIdExists(Long id) {
+        return requests.containsKey(id);
+    }
 
     private long getId() {
         long lastId = requests.values().stream()
