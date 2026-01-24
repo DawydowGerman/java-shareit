@@ -46,6 +46,11 @@ public class InMemoryRequestRepository {
         return requests.containsKey(id);
     }
 
+    public void remove(Long id) {
+        requests.remove(id);
+        log.debug("Запрос с id " + id + " удален.");
+    }
+
     private long getId() {
         long lastId = requests.values().stream()
                 .mapToLong(Request::getId)
