@@ -30,6 +30,13 @@ public class InMemoryRequestRepository {
         return new ArrayList<>(requests.values());
     }
 
+    Optional<Request> getRequestById(Long id) {
+        if (!requests.containsKey(id)) {
+            throw new NotFoundException("Запрос с id " + id + " отсутствует.");
+        }
+        return Optional.of(requests.get(id));
+    }
+
     public Request update(Request newRequest) {
         if (!requests.containsKey(newRequest.getId())) {
             throw new NotFoundException("Запрос с id " + newRequest.getId() + " отсутствует.");
