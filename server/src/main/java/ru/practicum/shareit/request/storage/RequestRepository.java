@@ -14,5 +14,5 @@ public interface RequestRepository {
 
     Optional<Request> getRequestById(Long id);
 
-    void remove(Long id);
+    void deleteById(Long id);
 }

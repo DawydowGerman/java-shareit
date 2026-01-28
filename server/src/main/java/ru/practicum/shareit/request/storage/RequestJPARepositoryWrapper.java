@@ -8,9 +8,9 @@ import java.util.Optional;
 
 @Repository("requestRepository")
 public class RequestJPARepositoryWrapper implements RequestRepository {
-    private final RequestRepository jpaRepository;
+    private final RequestJPARepository jpaRepository;
 
-    public RequestJPARepositoryWrapper(RequestRepository jpaRepository) {
+    public RequestJPARepositoryWrapper(RequestJPARepository jpaRepository) {
         this.jpaRepository = jpaRepository;
     }
 
@@ -35,7 +35,7 @@ public class RequestJPARepositoryWrapper implements RequestRepository {
     }
 
     @Override
-    public void remove(Long id) {
-        jpaRepository.remove(id);
+    public void deleteById(Long id) {
+        jpaRepository.deleteById(id);
     }
 }
