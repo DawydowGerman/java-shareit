@@ -35,6 +35,11 @@ public class RequestJPARepositoryWrapper implements RequestRepository {
     }
 
     @Override
+    public List<Request> getRequestsByAuthorId(Long authorId) {
+        return jpaRepository.getRequestsByAuthorId(authorId);
+    }
+
+    @Override
     public void deleteById(Long id) {
         jpaRepository.deleteById(id);
     }
