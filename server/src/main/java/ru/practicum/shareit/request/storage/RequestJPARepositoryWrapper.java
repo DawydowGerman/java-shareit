@@ -21,7 +21,7 @@ public class RequestJPARepositoryWrapper implements RequestRepository {
 
     @Override
     public List<Request> findAll() {
-        return jpaRepository.findAll();
+        return jpaRepository.getAllRequests();
     }
 
     @Override

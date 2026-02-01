@@ -3,15 +3,15 @@ package ru.practicum.shareit.request.storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
-import ru.practicum.shareit.expection.InternalServerException;
 import ru.practicum.shareit.expection.NotFoundException;
 import ru.practicum.shareit.request.controller.RequestController;
 import ru.practicum.shareit.request.model.Request;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Repository("inMemoryRepository")
-public class InMemoryRequestRepository {
+public class InMemoryRequestRepository implements RequestRepository {
     private final Map<Long, Request> requests = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(RequestController.class);
 
@@ -30,11 +30,18 @@ public class InMemoryRequestRepository {
         return new ArrayList<>(requests.values());
     }
 
-    Optional<Request> getRequestById(Long id) {
+    public Optional<Request> getRequestById(Long id) {
         if (!requests.containsKey(id)) {
             throw new NotFoundException("Запрос с id " + id + " отсутствует.");
         }
         return Optional.of(requests.get(id));
+    }
+
+    public List<Request> getRequestsByAuthorId(Long authorId) {
+        return requests.values()
+                .stream()
+                .filter(r -> r.getAuthor().getId().equals(authorId))
+                .collect(Collectors.toList());
     }
 
     public Request update(Request newRequest) {
@@ -53,7 +60,7 @@ public class InMemoryRequestRepository {
         return requests.containsKey(id);
     }
 
-    public void remove(Long id) {
+    public void deleteById(Long id) {
         requests.remove(id);
         log.debug("Запрос с id " + id + " удален.");
     }
