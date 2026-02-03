@@ -25,11 +25,6 @@ public class RequestJPARepositoryWrapper implements RequestRepository {
     }
 
     @Override
-    public Request update(Request newUser){
-        return jpaRepository.save(newUser);
-    }
-
-    @Override
     public Optional<Request> getRequestById(Long id) {
         return jpaRepository.getRequestById(id);
     }
@@ -37,6 +32,16 @@ public class RequestJPARepositoryWrapper implements RequestRepository {
     @Override
     public List<Request> getRequestsByAuthorId(Long authorId) {
         return jpaRepository.getRequestsByAuthorId(authorId);
+    }
+
+    @Override
+    public Request update(Request newUser) {
+        return jpaRepository.save(newUser);
+    }
+
+    @Override
+    public boolean isRequestIdExists(Long id) {
+        return jpaRepository.existsById(id);
     }
 
     @Override

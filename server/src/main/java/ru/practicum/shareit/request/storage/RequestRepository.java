@@ -10,11 +10,13 @@ public interface RequestRepository {
 
     List<Request> findAll();
 
-    Request update(Request newRequest);
-
     Optional<Request> getRequestById(Long id);
 
     List<Request> getRequestsByAuthorId(Long authorId);
+
+    Request update(Request newRequest);
+
+    boolean isRequestIdExists(Long id);
 
     void deleteById(Long id);
 }

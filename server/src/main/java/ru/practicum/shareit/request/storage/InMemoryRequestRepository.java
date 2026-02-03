@@ -15,6 +15,7 @@ public class InMemoryRequestRepository implements RequestRepository {
     private final Map<Long, Request> requests = new HashMap<>();
     private static final Logger log = LoggerFactory.getLogger(RequestController.class);
 
+    @Override
     public Request save(Request request) {
         request.setId(getId());
         requests.put(request.getId(), request);
@@ -22,6 +23,7 @@ public class InMemoryRequestRepository implements RequestRepository {
         return request;
     }
 
+    @Override
     public List<Request> findAll() {
         if (requests.isEmpty()) {
             log.error("Список реквестов пуст.");
@@ -30,6 +32,7 @@ public class InMemoryRequestRepository implements RequestRepository {
         return new ArrayList<>(requests.values());
     }
 
+    @Override
     public Optional<Request> getRequestById(Long id) {
         if (!requests.containsKey(id)) {
             throw new NotFoundException("Запрос с id " + id + " отсутствует.");
@@ -37,6 +40,7 @@ public class InMemoryRequestRepository implements RequestRepository {
         return Optional.of(requests.get(id));
     }
 
+    @Override
     public List<Request> getRequestsByAuthorId(Long authorId) {
         return requests.values()
                 .stream()
@@ -44,6 +48,7 @@ public class InMemoryRequestRepository implements RequestRepository {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public Request update(Request newRequest) {
         if (!requests.containsKey(newRequest.getId())) {
             throw new NotFoundException("Запрос с id " + newRequest.getId() + " отсутствует.");
@@ -56,10 +61,12 @@ public class InMemoryRequestRepository implements RequestRepository {
         return oldRequest;
     }
 
+    @Override
     public boolean isRequestIdExists(Long id) {
         return requests.containsKey(id);
     }
 
+    @Override
     public void deleteById(Long id) {
         requests.remove(id);
         log.debug("Запрос с id " + id + " удален.");
@@ -72,5 +79,4 @@ public class InMemoryRequestRepository implements RequestRepository {
                 .orElse(0);
         return lastId + 1;
     }
-
 }
