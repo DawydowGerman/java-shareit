@@ -2,6 +2,7 @@ package ru.practicum.shareit.request.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.expection.NotFoundException;
 import ru.practicum.shareit.expection.ValidationException;
@@ -13,7 +14,7 @@ import ru.practicum.shareit.request.mapper.AnswerMapper;
 import ru.practicum.shareit.request.mapper.RequestMapper;
 import ru.practicum.shareit.request.model.AnswerToRequest;
 import ru.practicum.shareit.request.model.Request;
-import ru.practicum.shareit.request.storage.RequestJPARepository;
+import ru.practicum.shareit.request.storage.RequestRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.storage.UserJPARepository;
 
@@ -26,14 +27,14 @@ import java.util.stream.Collectors;
 
 @Service
 public class RequestServiceImpl implements RequestService {
-    private final RequestJPARepository requestJPARepository;
+    private final RequestRepository requestRepository;
     private final UserJPARepository userJPARepository;
     private final ItemJPARepository itemJPARepository;
 
     @Autowired
-    public RequestServiceImpl(RequestJPARepository requestJPARepository, UserJPARepository userJPARepository,
+    public RequestServiceImpl(@Qualifier("jpaRepository") RequestRepository requestJPARepository, UserJPARepository userJPARepository,
                               ItemJPARepository itemJPARepository) {
-        this.requestJPARepository = requestJPARepository;
+        this.requestRepository = requestJPARepository;
         this.userJPARepository = userJPARepository;
         this.itemJPARepository = itemJPARepository;
     }
@@ -49,14 +50,14 @@ public class RequestServiceImpl implements RequestService {
         incomingDTO.setAuthor(userJPARepository.findById(userId).get());
         incomingDTO.setCreated(LocalDateTime.now());
         Request request = RequestMapper.toModel(incomingDTO);
-        request = requestJPARepository.save(request);
+        request = requestRepository.save(request);
         return RequestMapper.toDto(request);
     }
 
     public List<RequestOutcomingDTO> getAllRequests(Long userId) {
         User user = userJPARepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
-        List<Request> requestList = requestJPARepository.getAllRequests();
+        List<Request> requestList = requestRepository.findAll();
         if (requestList.isEmpty()) {
             System.out.println("Запросы на вещи отсутствуют");
             return Collections.emptyList();
@@ -69,7 +70,7 @@ public class RequestServiceImpl implements RequestService {
     public List<RequestOutcomingDTO> getOwnRequests(Long userId) {
         User user = userJPARepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
-        List<RequestOutcomingDTO> result = requestJPARepository.getRequestsByAuthorId(userId).stream()
+        List<RequestOutcomingDTO> result = requestRepository.getRequestsByAuthorId(userId).stream()
                 .map(RequestMapper::toDto)
                 .collect(Collectors.toList());
         if (result.isEmpty()) {
@@ -94,7 +95,7 @@ public class RequestServiceImpl implements RequestService {
     public RequestOutcomingDTO getRequestById(Long userId, Long requestId) {
         User user = userJPARepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
-        Optional<Request> request = requestJPARepository.getRequestById(requestId);
+        Optional<Request> request = requestRepository.getRequestById(requestId);
         if (request.isEmpty()) {
             System.out.println("Запросы на вещи отсутствуют");
             return new RequestOutcomingDTO();
