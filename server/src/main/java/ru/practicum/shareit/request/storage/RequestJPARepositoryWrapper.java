@@ -6,7 +6,7 @@ import ru.practicum.shareit.request.model.Request;
 import java.util.List;
 import java.util.Optional;
 
-@Repository("requestRepository")
+@Repository("jpaRepository")
 public class RequestJPARepositoryWrapper implements RequestRepository {
     private final RequestJPARepository jpaRepository;
 
