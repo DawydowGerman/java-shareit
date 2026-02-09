@@ -112,4 +112,20 @@ public class RequestServiceImpl implements RequestService {
         }
         return result;
     }
+
+    private List<RequestOutcomingDTO> linkRequestToItem(List<RequestOutcomingDTO> requestsList) {
+        List<Long> requestIdList = requestsList.stream()
+                .map(req -> req.getId())
+                .collect(Collectors.toList());
+        List<Item> itemList = itemJPARepository.getItemsByRequest(requestIdList);
+        if (itemList.isEmpty()) {
+            return requestsList;
+        }
+        requestsList.forEach(r -> itemList.forEach(item -> {
+            if (r.getId().equals(item.getRequestId())) {
+                r.addToAnswerList(AnswerMapper.toAnswer(item));
+            }
+        }));
+        return requestsList;
+    }
 }
