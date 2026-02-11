@@ -62,9 +62,9 @@ public class RequestServiceImpl implements RequestService {
             System.out.println("Запросы на вещи отсутствуют");
             return Collections.emptyList();
         }
-        return requestList.stream()
+        return linkRequestToItem(requestList.stream()
                 .map(RequestMapper::toDto)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
     }
 
     public List<RequestOutcomingDTO> getOwnRequests(Long userId) {
