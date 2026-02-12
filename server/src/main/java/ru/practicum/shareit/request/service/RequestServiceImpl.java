@@ -77,19 +77,7 @@ public class RequestServiceImpl implements RequestService {
             System.out.println("Пользователь с id " + userId + " не имеет запросов.");
             return Collections.emptyList();
         }
-        List<Long> requestIdList = result.stream()
-                .map(req -> req.getId())
-                .collect(Collectors.toList());
-        List<Item> itemList = itemJPARepository.getItemsByRequest(requestIdList);
-        if (itemList.isEmpty()) {
-            return result;
-        }
-        result.forEach(r -> itemList.forEach(item -> {
-            if (r.getId().equals(item.getRequestId())) {
-                r.addToAnswerList(AnswerMapper.toAnswer(item));
-            }
-        }));
-        return result;
+        return linkRequestToItem(result);
     }
 
     public RequestOutcomingDTO getRequestById(Long userId, Long requestId) {
