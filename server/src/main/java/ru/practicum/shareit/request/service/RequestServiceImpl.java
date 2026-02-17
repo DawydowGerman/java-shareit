@@ -90,14 +90,14 @@ public class RequestServiceImpl implements RequestService {
         }
         RequestOutcomingDTO result = RequestMapper.toDto(request.get());
         List<Long> idList = Arrays.asList(result.getId());
-        if (!itemJPARepository.getItemsByRequest(idList).isEmpty()) {
-            List<Item> itemList = itemJPARepository.getItemsByRequest(idList);
-            List<AnswerToRequest> items = itemList.stream()
-                    .map(AnswerMapper::toAnswer)
-                    .collect(Collectors.toList());
-            result.setItems(items);
+        if (itemJPARepository.getItemsByRequest(idList).isEmpty()) {
             return result;
         }
+        List<Item> itemList = itemJPARepository.getItemsByRequest(idList);
+        List<AnswerToRequest> items = itemList.stream()
+                .map(AnswerMapper::toAnswer)
+                .collect(Collectors.toList());
+        result.setItems(items);
         return result;
     }
 
