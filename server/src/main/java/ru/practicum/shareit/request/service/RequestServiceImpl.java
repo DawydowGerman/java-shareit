@@ -16,7 +16,7 @@ import ru.practicum.shareit.request.model.AnswerToRequest;
 import ru.practicum.shareit.request.model.Request;
 import ru.practicum.shareit.request.storage.RequestRepository;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.storage.UserJPARepository;
+import ru.practicum.shareit.user.storage.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -28,26 +28,26 @@ import java.util.stream.Collectors;
 @Service
 public class RequestServiceImpl implements RequestService {
     private final RequestRepository requestRepository;
-    private final UserJPARepository userJPARepository;
+    private final UserRepository userRepository;
     private final ItemJPARepository itemJPARepository;
 
     @Autowired
-    public RequestServiceImpl(@Qualifier("jpaRepository") RequestRepository requestJPARepository, UserJPARepository userJPARepository,
+    public RequestServiceImpl(@Qualifier("jpaRepository") RequestRepository requestJPARepository, @Qualifier("jpaRepository") UserRepository userRepository,
                               ItemJPARepository itemJPARepository) {
         this.requestRepository = requestJPARepository;
-        this.userJPARepository = userJPARepository;
+        this.userRepository = userRepository;
         this.itemJPARepository = itemJPARepository;
     }
 
     @Transactional
     public RequestOutcomingDTO addNewRequest(Long userId, RequestIncomingDTO incomingDTO) {
-        if (!userJPARepository.existsById(userId)) {
+        if (userRepository.getUserById(userId).isEmpty()) {
             throw new NotFoundException("Юзер отсутствует");
         }
         if (incomingDTO.getDescription() == null || incomingDTO.getDescription().isEmpty()) {
             throw new ValidationException("Description cannot be null or empty");
         }
-        incomingDTO.setAuthor(userJPARepository.findById(userId).get());
+        incomingDTO.setAuthor(userRepository.getUserById(userId).get());
         incomingDTO.setCreated(LocalDateTime.now());
         Request request = RequestMapper.toModel(incomingDTO);
         request = requestRepository.save(request);
@@ -55,7 +55,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     public List<RequestOutcomingDTO> getAllRequests(Long userId) {
-        User user = userJPARepository.findById(userId)
+        User user = userRepository.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
         List<Request> requestList = requestRepository.findAll();
         if (requestList.isEmpty()) {
@@ -68,7 +68,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     public List<RequestOutcomingDTO> getOwnRequests(Long userId) {
-        User user = userJPARepository.findById(userId)
+        User user = userRepository.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
         List<RequestOutcomingDTO> result = requestRepository.getRequestsByAuthorId(userId).stream()
                 .map(RequestMapper::toDto)
@@ -81,7 +81,7 @@ public class RequestServiceImpl implements RequestService {
     }
 
     public RequestOutcomingDTO getRequestById(Long userId, Long requestId) {
-        User user = userJPARepository.findById(userId)
+        User user = userRepository.getUserById(userId)
                 .orElseThrow(() -> new NotFoundException("Юзер с ID " + userId + " отсутствует."));
         Optional<Request> request = requestRepository.getRequestById(requestId);
         if (request.isEmpty()) {
@@ -99,6 +99,17 @@ public class RequestServiceImpl implements RequestService {
                 .collect(Collectors.toList());
         result.setItems(items);
         return result;
+    }
+
+    @Transactional
+    public RequestOutcomingDTO update(Long requestId, RequestIncomingDTO requestDTO) {
+        Request request = requestRepository.getRequestById(requestId)
+                .orElseThrow(() -> new NotFoundException("Запрос с ID " + requestId + " отсутствует."));
+        if (requestDTO.getDescription() != null) {
+            request.setDescription(requestDTO.getDescription());
+        }
+        request = requestRepository.save(request);
+        return RequestMapper.toDto(request);
     }
 
     private List<RequestOutcomingDTO> linkRequestToItem(List<RequestOutcomingDTO> requestsList) {

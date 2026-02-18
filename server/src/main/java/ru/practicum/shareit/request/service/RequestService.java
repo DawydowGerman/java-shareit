@@ -13,4 +13,6 @@ public interface RequestService {
     List<RequestOutcomingDTO> getAllRequests(Long userId);
 
     RequestOutcomingDTO getRequestById(Long userId, Long requestId);
+
+    RequestOutcomingDTO update(Long authorId, RequestIncomingDTO userRequestDTO);
 }
