@@ -112,6 +112,10 @@ public class RequestServiceImpl implements RequestService {
         return RequestMapper.toDto(request);
     }
 
+    public boolean isRequestIdExists(Long id) {
+        return requestRepository.isRequestIdExists(id);
+    }
+
     private List<RequestOutcomingDTO> linkRequestToItem(List<RequestOutcomingDTO> requestsList) {
         List<Long> requestIdList = requestsList.stream()
                 .map(req -> req.getId())
