@@ -116,6 +116,14 @@ public class RequestServiceImpl implements RequestService {
         return requestRepository.isRequestIdExists(id);
     }
 
+    @Transactional
+    public void deleteById(Long id) {
+        if (!requestRepository.isRequestIdExists(id)) {
+            throw new NotFoundException("Запрос не найден с id = " + id);
+        }
+        requestRepository.deleteById(id);
+    }
+
     private List<RequestOutcomingDTO> linkRequestToItem(List<RequestOutcomingDTO> requestsList) {
         List<Long> requestIdList = requestsList.stream()
                 .map(req -> req.getId())
