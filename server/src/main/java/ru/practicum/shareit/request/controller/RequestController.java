@@ -47,4 +47,11 @@ public class RequestController {
         log.info("Request request by id: {}", requestId);
         return requestService.getRequestById(userId, requestId);
     }
+
+    @PatchMapping("/{requestId}")
+    public RequestOutcomingDTO update(@PathVariable(name = "requestId") Long id,
+                                      @RequestBody RequestIncomingDTO requestDTO) {
+        log.info("Request's update: {}", requestDTO);
+        return requestService.update(id, requestDTO);
+    }
 }
