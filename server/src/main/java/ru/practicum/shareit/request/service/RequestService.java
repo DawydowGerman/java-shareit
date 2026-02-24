@@ -15,4 +15,6 @@ public interface RequestService {
     RequestOutcomingDTO getRequestById(Long userId, Long requestId);
 
     RequestOutcomingDTO update(Long authorId, RequestIncomingDTO userRequestDTO);
+
+    void deleteById(Long id);
 }

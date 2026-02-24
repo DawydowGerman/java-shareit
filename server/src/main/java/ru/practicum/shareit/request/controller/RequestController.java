@@ -54,4 +54,10 @@ public class RequestController {
         log.info("Request's update: {}", requestDTO);
         return requestService.update(id, requestDTO);
     }
+
+    @DeleteMapping("/{requestId}")
+    public void remove(@PathVariable(name = "requestId") Long id) {
+        log.info("Request's removal by ID: {}", id);
+        requestService.deleteById(id);
+    }
 }
