@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Repository
 public class InMemoryItemRepository implements ItemRepository {
     private final Map<Long, Item> items = new HashMap<>();
-    private static final Logger log = LoggerFactory.getLogger(UserController.class);
+    private static final Logger log = LoggerFactory.getLogger(InMemoryItemRepository.class);
 
     @Override
     public Item save(Item item) {
