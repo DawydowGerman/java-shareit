@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.controller.UserController;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,11 +32,11 @@ public class InMemoryItemRepository implements ItemRepository {
 
     @Override
     public Optional<Item> getItemById(Long id) {
-        if (items.containsKey(id)) {
-            return Optional.of(items.get(id));
+        if (!items.containsKey(id)) {
+            log.debug("Ошибка при получении вещи с ID" + id);
+            return Optional.empty();
         }
-        log.error("Ошибка при получении вещи с ID" + id);
-        return Optional.empty();
+        return Optional.of(items.get(id));
     }
 
     @Override
