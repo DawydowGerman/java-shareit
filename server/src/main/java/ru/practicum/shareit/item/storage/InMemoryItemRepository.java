@@ -54,17 +54,17 @@ public class InMemoryItemRepository implements ItemRepository {
 
     @Override
     public Optional<List<Item>> getItemsByText(String text) {
+        if (text == null || text.isBlank()) {
+            return Optional.empty();
+        }
         List<Item> resultList = items.values()
                 .stream()
-                .filter(item -> item.getDescription().toLowerCase().contains(text.toLowerCase())
-                        || item.getName().toLowerCase().contains(text.toLowerCase())
-                        && item.getAvailable().booleanValue())
+                .filter(item ->
+                        item.getDescription().toLowerCase().contains(text.toLowerCase()) ||
+                        item.getName().toLowerCase().contains(text.toLowerCase()) &&
+                        item.getAvailable().booleanValue())
                 .collect(Collectors.toList());
-        if (resultList.size() > 0) {
-            return Optional.of(resultList);
-        }
-        List<Item> emtpytList = new ArrayList<>();
-        return Optional.of(emtpytList);
+        return resultList.isEmpty() ? Optional.empty() : Optional.of(resultList);
     }
 
     @Override
